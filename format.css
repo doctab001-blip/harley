@@ -15,3 +15,11 @@
 .notes .tickbar button{background:none;border:1px solid var(--line);border-radius:999px;padding:4px 12px;cursor:pointer;color:#6B5A63;font:inherit}
 .notes .tickbar .bar{flex:1;height:6px;background:#eadfe3;border-radius:6px;overflow:hidden}
 .notes .tickbar .bar i{display:block;height:100%;background:#7A3E52;width:0;transition:width .2s}
+
+/* Figures: two per row at most, larger images */
+.figs{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:26px!important}
+.figs>figure.fig:only-child,.figs>figure.fig:last-child:nth-child(odd){grid-column:1/-1}
+figure.fig{padding:18px!important}
+figure.fig img{max-height:820px!important}
+.figs>figure.fig:only-child img{max-height:900px!important}
+@media(max-width:760px){.figs{grid-template-columns:1fr!important}}
