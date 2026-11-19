@@ -60,3 +60,4 @@ details.jump summary{cursor:pointer;color:#7A3E52;font-weight:600}
 .jump-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:4px 16px;margin-top:10px}
 .jump-list a{padding:6px 0;text-decoration:none;color:#3A3034;border-bottom:1px solid #eee}
 .jump-list a.cur{color:#7A3E52;font-weight:700}
+.incl{font-size:.92rem;color:#6B5A63;line-height:1.7}.incl b{color:#7A3E52}
