@@ -16,7 +16,7 @@ function fmt(){
   for(var j=0;j<lis.length;j++){var li=lis[j],t=li.textContent,m=t.match(/^([^:]{2,70}):\s([\s\S]*)$/);
    var pt=m?m[1]:"",pb=m?m[2]:t;
    var inner=(pt?'<span class="pt">'+esc(pt)+'</span>':'')+'<span class="pb">'+body(pb)+'</span>';
-   if(tick){var id="t"+mod+"_"+i+"_"+j;li.innerHTML='<label><input type="checkbox" data-t="'+id+'"'+(T[id]?" checked":"")+'><span>'+inner+'</span></label>';if(T[id])li.className="done";}
+   if(tick){var id="t"+mod+"_"+(h3[i].dataset.i!==undefined?h3[i].dataset.i:i)+"_"+j;li.innerHTML='<label><input type="checkbox" data-t="'+id+'"'+(T[id]?" checked":"")+'><span>'+inner+'</span></label>';if(T[id])li.className="done";}
    else li.innerHTML=inner;}
   if(tick){var bar=document.createElement("div");bar.className="tickbar";bar.innerHTML='<span><b class="c">0</b> of '+lis.length+' ticked</span><span class="bar"><i></i></span><button type="button">Reset ticks</button>';ul.parentNode.insertBefore(bar,ul.nextSibling);upd(ul,bar);}
  }
