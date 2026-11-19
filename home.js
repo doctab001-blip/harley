@@ -1,0 +1,71 @@
+/* Interactive home: metric drawer, expandable principles, revision tracker with live progress, flashcard preview, launch simulator */
+(function(){
+var H={metric:"budget",rule:"training",card:0,flip:false,modal:false,q:0,sess:2,pps:3,fee:260};
+var METRICS=[
+ {id:"budget",v:"£1,800",l:"Launch budget, £200 reserve",cap:"Planned allocation, with £200 left untouched",rows:[["Refresher and supervised training","£650","Level 7 refresh, mentor-observed lists and complication drills"],["Professional indemnity provision","£400","Quote first; cover must include injectables and complications"],["Initial room hire and deposit","£250","Session-by-session hire, no monthly contract"],["Booking and clinical record systems","£100","Encrypted consent, photos and notes"],["Clinical governance and consumables","£150","Sharps, waste, emergency kit"],["Professional advice and contingency","£250","Accountant, legal check, buffer"],["Unallocated reserve","£200","Do not spend"]],link:"#/business"},
+ {id:"timeline",v:"12 months",l:"To a working small practice",cap:"Phased, unhurried return around GIM training",rows:[["Months 1 to 3","Phase 1","Level 7 theory refresh, danger zones, emergency algorithms"],["Months 4 to 6","Phase 2","Supervised clinical lists and complication drills"],["Months 7 to 9","Phase 3","Room, governance, indemnity and cover arrangements"],["Months 10 to 12","Phase 4","Soft launch with 1 to 2 protected sessions a month"]],link:"#/plan"},
+ {id:"sessions",v:"1 to 2",l:"Sessions a month to begin",cap:"Built around on-calls and family life",rows:[["Clinic frequency","1 to 2 a month","Saturday morning or a non-working half-day"],["Consultation","45 to 60 min","Unhurried assessment and cooling-off period"],["Review slot","Day 14","Booked in advance with every treatment"],["On-call buffer","72 hours","No elective injecting next to night shifts"]],link:"#/planner"}
+];
+var RULES=[
+ {id:"training",n:"01",t:"Training comes first",b:"GIM progress and ARCP evidence always take priority over clinic sessions. No aesthetic booking compromises rota commitments, rest days or study leave.",tag:"ARCP and rota protected",s:"Release clinic dates only about 6 weeks ahead, after on-call, zero-day and study-leave rotas are final."},
+ {id:"supervised",n:"02",t:"Supervised before solo",b:"Independent treatment starts only after documented mentor sign-off, complication rehearsal and governance checks, never a case count.",tag:"Mentor sign-off required",s:"Logged sign-off across upper-face toxin, mid-face filler and a simulated vascular occlusion."},
+ {id:"reachable",n:"03",t:"Only treat when reachable",b:"Book a patient only if you or a named, credentialed medical colleague can see them in person within 24 hours if there is a vascular or other urgent problem.",tag:"24 hour in-person cover",s:"Emergency hyaluronidase kit comes with you, and named local medical cover is confirmed before every list."}
+];
+var QS=[
+ {q:"Months 1 to 3",h:"Knowledge and emergency rehearsal",f:"Rebuild Level 7 knowledge around ward blocks.",d:["Work through all six revision modules","Rehearse the vascular occlusion and hyaluronidase drill against the clock","Shortlist a Hastings room and a clinical waste route"],spent:"About £240"},
+ {q:"Months 4 to 6",h:"Supervised lists and sign-off",f:"Hands-on calibration under direct mentor supervision.",d:["Complete supervised observation and injecting days","Log mentored consultations, consent audits and treatments","Obtain written competency sign-off for upper-face toxin and mid-face filler"],spent:"Training costs"},
+ {q:"Months 7 to 9",h:"Governance, indemnity and cover",f:"Airtight governance before any independent treatment.",d:["Bind indemnity that covers injectables and complications","Sign a written 24 hour in-person complication cover agreement","Set up the emergency kit and an encrypted photo and consent system"],spent:"Indemnity, kit, systems"},
+ {q:"Months 10 to 12",h:"A working small practice",f:"Start 1 to 2 curated half-day sessions around the rota.",d:["Run 1 to 2 half-day sessions a month, 3 to 4 patients a list","Keep the £200 reserve untouched and a day 14 review for every patient","Check the budget against the plan after each session"],spent:"Within £1,800"}
+];
+function e(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function modStats(m){var g=mastered(m.id),secs=(m.groups||m.notes).length,seen=0;try{var V=JSON.parse(localStorage.getItem("arh_seen")||"{}");for(var i=0;i<secs;i++)if(V[m.id+"_g"+i])seen++;}catch(x){}
+ return {m:g.m,t:g.t,seen:seen,secs:secs,pct:g.t?Math.round(g.m*100/g.t):0};}
+function overall(){var s=0;MODULES.forEach(function(m){s+=modStats(m).pct;});return Math.round(s/MODULES.length);}
+function sim(){var gross=H.sess*H.pps*H.fee,cost=H.sess*(H.pps*68+110),net=Math.max(0,gross-cost);return {gross:gross,cost:cost,net:net,mo:net>0?Math.max(1,Math.ceil(1800/net)):"-"};}
+
+window.viewHome=function(){
+ var M=METRICS.filter(function(x){return x.id===H.metric;})[0],h='<div class="stack hm">';
+ h+='<section class="hero"><div><div class="eyebrow">Doctor-led · Hastings · East Sussex</div><h1 style="margin-top:22px">Refresh. <em class="it">Re-enter.</em> Build.</h1><p class="lead">Your private hub for rebuilding Level 7 injectables knowledge, returning to supervised practice, and growing a small, premium, doctor-led aesthetics practice around GIM training and family life.</p><div class="btn-row"><a class="btn" href="#/modules">Start revising</a><a class="btn ghost" href="#/business">Business plan</a></div>';
+ h+='<div class="hm-ticks"><span>&#10003; GIM rota and ARCP protected</span><span>&#10003; Level 7 mapped curriculum</span><span>&#10003; 24 hour local cover rule</span></div></div>';
+ h+='<aside class="hero-panel hm-panel" aria-label="At a glance">';
+ METRICS.forEach(function(x){var on=x.id===H.metric;h+='<button type="button" class="row hm-row'+(on?' on':'')+'" data-hm="metric" data-v="'+x.id+'"><div class="hm-rowtop"><div class="k">'+x.v+'</div><span class="hm-pill">'+(on?'Open':'Inspect')+' &rsaquo;</span></div><div class="l">'+x.l+'</div></button>';});
+ h+='<div class="hm-drawer"><div class="hm-cap"><span>'+M.cap+'</span><a href="'+M.link+'">Details &rarr;</a></div><ul>';
+ M.rows.forEach(function(r){h+='<li><div><b>'+e(r[0])+'</b><small>'+e(r[2])+'</small></div><span>'+e(r[1])+'</span></li>';});
+ h+='</ul></div></aside></section>';
+ h+='<section class="stack-s"><div class="sec-head"><div class="eyebrow">Your guiding principles</div><h2>Three rules that protect everything else</h2></div><div class="grid">';
+ RULES.forEach(function(r){var on=H.rule===r.id;h+='<div class="card dark hm-rule'+(on?' open':'')+'" role="button" tabindex="0" data-hm="rule" data-v="'+r.id+'"><div class="hm-rtop"><span class="hm-num">'+r.n+'</span><span class="hm-tag">'+r.tag+'</span></div><h3>'+r.t+'</h3><p>'+r.b+'</p><div class="hm-safe"><span>'+(on?'Safeguard protocol':'Inspect safeguard protocol')+'</span><i>'+(on?'&#9662;':'&#9656;')+'</i></div>'+(on?'<p class="hm-sp">'+r.s+'</p>':'')+'</div>';});
+ h+='</div></section>';
+ /* tracker */
+ var ov=overall();
+ h+='<section class="stack-s" id="tracker"><div class="sec-head"><div class="eyebrow">Revision progress</div><h2>Level 7 curriculum and re-entry tracker</h2></div><div class="hm-grid"><div class="card hm-mods"><div class="hm-mh"><div><h3>Your revision modules</h3><small>Progress comes from the flashcards you have mastered and the topics you have opened</small></div><span class="chip gold">'+ov+'% cards mastered</span></div><div class="hm-cards">';
+ MODULES.forEach(function(m){var s=modStats(m);h+='<a class="hm-mod" href="#/module/'+m.id+'"><div class="hm-mt"><span>MODULE '+m.id+'</span><span class="chip">'+s.seen+' of '+s.secs+' topics</span></div><h4>'+e(m.title)+'</h4><p>'+e(m.short)+'</p><div class="hm-mb"><span>'+(s.t-s.m)+' cards to master</span><b>'+s.pct+'%</b></div><div class="hm-bar"><i style="width:'+s.pct+'%"></i></div></a>';});
+ h+='</div></div>';
+ var c=CARDS[H.card%CARDS.length],mod=MODULES.filter(function(m){return m.id===c[0];})[0];
+ h+='<div class="card hm-fc"><div class="hm-fh"><span class="eyebrow" style="margin:0">Flashcard preview</span><small>Card '+(H.card%CARDS.length+1)+' of '+CARDS.length+'</small></div><h3>'+e(mod?mod.title:"Module "+c[0])+'</h3><div class="hm-flip'+(H.flip?' back':'')+'" role="button" tabindex="0" data-hm="flip"><span class="hm-lab">'+(H.flip?'Answer':'Question')+'</span><p>'+e(H.flip?c[2]:c[1])+'</p><small>'+(H.flip?'Tap to show the question':'Tap the card to reveal the answer')+'</small></div><div class="btn-row"><button type="button" class="btn ghost" data-hm="prev">Previous</button><button type="button" class="btn" data-hm="next">Next card</button><a class="btn ghost" href="#/cards/'+c[0]+'">Revise this module</a></div></div></div></section>';
+ h+='<section class="hm-sim card dark"><div><div class="eyebrow" style="color:#E8CFA6">Hastings launch simulator</div><h3>Model the £1,800 budget and 1 to 2 monthly sessions</h3><p>Walk through the four quarters of the first year, then test how many sessions and patients it takes to recoup the launch outlay.</p></div><button type="button" class="btn gold" data-hm="open">Open the simulator</button></section>';
+ h+='<section class="stack-s"><div class="sec-head"><div class="eyebrow">Inside the hub</div><h2>Everything in one place</h2></div><div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(190px,1fr))">';
+ [["#/plan","The plan","Clinical roadmap, eight-week refresher, readiness checklists."],["#/modules","Revision modules","Six modules in topics, each with its own image slideshow."],["#/cards","Flashcards","Cards with spaced repetition by module."],["#/practice","Practice","Exam-style questions and clinical scenarios."],["#/planner","Planner","Study week, practice log, launch tasks and countdown."],["#/business","Business plan","Hastings market, budget, live financial model, 12-month plan."],["#/progress","Progress","Everything you have ticked off, saved on this device."]].forEach(function(t){h+='<a class="card mod-card" href="'+t[0]+'"><h3>'+t[1]+'</h3><div style="color:var(--muted)">'+t[2]+'</div></a>';});
+ h+='</div></section><p class="disc">This hub is a revision and planning aid, not clinical, legal, financial or regulatory advice. Check doses against product SmPCs, protocols against your Harley materials and national guidance, and rules against current GMC, MHRA, ASA, indemnity and local council requirements.</p></div>';
+ return h;
+};
+
+function modal(){
+ var q=QS[H.q],s=sim(),h='<div class="hm-ov" data-hm="close"><div class="hm-md" role="dialog" aria-modal="true" aria-label="Launch simulator"><button type="button" class="hm-x" data-hm="close" aria-label="Close">&times;</button><div class="eyebrow">Doctor-led practice blueprint · Hastings</div><h2>12 month launch and budget simulator</h2><div class="hm-two"><div><div class="hm-qs">';
+ QS.forEach(function(x,i){h+='<button type="button" class="'+(i===H.q?'on':'')+'" data-hm="q" data-v="'+i+'"><small>Quarter '+(i+1)+'</small>'+x.q+'</button>';});
+ h+='</div><div class="card plain"><span class="chip gold">'+q.q+'</span> <span class="hm-spent">Spend focus: '+q.spent+'</span><h3 style="margin-top:10px">'+q.h+'</h3><p>'+q.f+'</p><ul class="hm-dl">';
+ q.d.forEach(function(x){h+='<li>'+x+'</li>';});
+ h+='</ul></div></div><div class="card dark hm-calc"><h3>Session pace</h3>';
+ [["sess","Clinic sessions a month",1,3,1,H.sess,""],["pps","Patients a session",2,5,1,H.pps,""],["fee","Average treatment fee",200,360,20,H.fee,"£"]].forEach(function(r){h+='<label><span>'+r[1]+'</span><b>'+r[6]+r[5]+'</b></label><input type="range" min="'+r[2]+'" max="'+r[3]+'" step="'+r[4]+'" value="'+r[5]+'" data-hm="rng" data-v="'+r[0]+'">';});
+ h+='<div class="hm-out"><div><span>Monthly takings</span><b>£'+s.gross.toLocaleString()+'</b></div><div><span>Stock and room</span><b>-£'+s.cost.toLocaleString()+'</b></div><div class="t"><span>Net each month</span><b>£'+s.net.toLocaleString()+'</b></div><div><span>Recoup £1,800 in about</span><b>'+s.mo+' month'+(s.mo===1?'':'s')+'</b></div></div><p class="hm-note">Illustration only: assumes about £68 of stock per patient and £110 of room per session, and ignores tax and your time. The full model is in the <a href="#/business" data-hm="close">Business plan</a>.</p></div></div></div></div>';
+ return h;
+}
+function paint(){var y=window.scrollY,a=document.getElementById("app");if(!/^#\/?$|^#\/home/.test(location.hash||"#/"))return;a.innerHTML=viewHome();window.scrollTo(0,y);var old=document.getElementById("hm-modal");if(old)old.remove();if(H.modal){var d=document.createElement("div");d.id="hm-modal";d.innerHTML=modal();document.body.appendChild(d);}}
+document.addEventListener("click",function(ev){var t=ev.target.closest("[data-hm]");if(!t)return;var k=t.getAttribute("data-hm"),v=t.getAttribute("data-v");
+ if(k==="close"){if(ev.target.closest(".hm-md")&&!ev.target.closest(".hm-x")&&ev.target.tagName!=="A")return;H.modal=false;var o=document.getElementById("hm-modal");if(o)o.remove();return;}
+ if(k==="metric")H.metric=v;else if(k==="rule")H.rule=H.rule===v?null:v;else if(k==="flip")H.flip=!H.flip;
+ else if(k==="next"){H.card=(H.card+1)%CARDS.length;H.flip=false;}else if(k==="prev"){H.card=(H.card+CARDS.length-1)%CARDS.length;H.flip=false;}
+ else if(k==="open")H.modal=true;else if(k==="q")H.q=parseInt(v,10);else return;paint();});
+document.addEventListener("input",function(ev){var t=ev.target;if(t.getAttribute&&t.getAttribute("data-hm")==="rng"){H[t.getAttribute("data-v")]=parseFloat(t.value);var y=window.scrollY,m=document.getElementById("hm-modal");var keep=t.getAttribute("data-v");m.innerHTML=modal();var nt=m.querySelector('[data-v="'+keep+'"]');if(nt)nt.focus();}});
+document.addEventListener("keydown",function(ev){if(ev.key==="Escape"&&H.modal){H.modal=false;var o=document.getElementById("hm-modal");if(o)o.remove();}if((ev.key==="Enter"||ev.key===" ")&&ev.target.getAttribute&&/rule|flip/.test(ev.target.getAttribute("data-hm")||"")){ev.preventDefault();ev.target.click();}});
+window.addEventListener("hashchange",function(){H.modal=false;var o=document.getElementById("hm-modal");if(o)o.remove();});
+})();
