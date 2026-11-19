@@ -1,5 +1,7 @@
 var CM="https://commons.wikimedia.org/wiki/";
-function F(file,cap,credit){return {f:file,c:cap,a:credit};}
+var KEYS={"Anatomy The Skin - NCI Visuals Online.jpg": "Labelled in English on the image: epidermis, dermis, fatty tissue, blood vessels, follicle, oil gland, sweat gland and melanocytes.", "1106 Front and Side Views of the Muscles of Facial Expressions numbered.jpg": "Key: 1 epicranial aponeurosis; 2 occipitofrontalis (frontal belly); 3 corrugator supercilii; 4 orbicularis oculi; 5 occipitofrontalis (occipital belly); 6 orbicularis oris; 7 buccinator. Procerus, depressor anguli oris, mentalis and masseter are not marked on this figure.", "Facial artery.PNG": "Colours in this engraving: red are arteries, blue are veins, yellow are nerves. The one call-out is 'Facial' (the facial artery). It is a neck dissection, so use it to see where the artery arises from the external carotid, not for facial detail.", "Head facial nerve branches TZBMC.jpg": "Key: T temporal, Z zygomatic, B buccal, M marginal mandibular, C cervical (the five terminal branches). P marks the posterior auricular branch.", "Influence of pigmentation on skin cancer risk.png": "Labelled in English: Fitzpatrick phototypes I to VI; epidermal melanin rises from I to VI; UV phenotype runs from 'UV sensitive, burn rather than tan' to 'UV resistant, tan, never burn'; cancer risk falls from I to VI.", "Neuro Muscular Junction.png": "Labelled in English on the image, including myelin sheath, neurilemma, axoplasm and Schwann cell.", "Botulinum toxin 3BTA.png": "Unlabelled 3D model. In this rendering red coils are alpha-helices, cyan arrows are beta-strands and grey lines are loops.", "Doctor performing Botox injection.jpg": "Photograph, no labels: a clinician injecting near the eye of a reclined patient.", "Intradermal injection.jpg": "Photograph, no labels: the needle enters almost flat to the skin surface, which is the angle for an intradermal injection.", "Epinephrine 1-1000 (1).JPG": "Photograph. The label reads 'Epinephrine Injection, USP 1-1000, 1 mL'. Epinephrine is the US name for adrenaline, and 1 in 1000 means 1 mg/mL.", "Signs and symptoms of anaphylaxis.svg": "Labelled in English by body system: central nervous system, respiratory, heart and vasculature, skin and gastrointestinal, plus conjunctiva, nose, lips, tongue and throat, and pelvic pain.", "Intramuscular site of adrenaline.jpg": "Labelled in English on the image: outer middle third of the thigh (green) and vastus lateralis (purple)."};
+var CAPS={"1106 Front and Side Views of the Muscles of Facial Expressions numbered.jpg": "Muscles of facial expression, front and side views, numbered. The key is below the image.", "Doctor performing Botox injection.jpg": "Cosmetic botulinum toxin injection near the eye.", "Facial artery.PNG": "Superficial dissection of the neck and face showing the external carotid artery and the facial artery."};
+function F(file,cap,credit){return {f:file,c:CAPS[file]||cap,a:credit,k:KEYS[file]||""};}
 function figHtml(f){
  var n=f.f.replace(/ /g,"_");var src=CM+"Special:FilePath/"+encodeURIComponent(n)+"?width=900";var page=CM+"File:"+encodeURIComponent(n);
  return '<figure class="fig"><img loading="lazy" src="'+src+'" alt="'+esc(f.c)+'" onerror="this.style.display=\'none\';this.nextElementSibling.insertAdjacentHTML(\'afterbegin\',\'Image could not load. \')"><figcaption>'+esc(f.c)+' <span>Image: '+esc(f.a)+'. <a href="'+page+'" target="_blank" rel="noopener">Source and licence</a></span></figcaption></figure>';
@@ -7,7 +9,7 @@ function figHtml(f){
 var MODULES = [
 {id:1,title:"Facial anatomy",short:"Layers, muscles, vessels, nerves and danger zones",
  notes:[
- {h:"Layers of the face",figs:[F("Skin.svg","Skin in section: epidermis, dermis and subcutis with vessels, nerve endings and glands. Use it to link injection depth to layer.","Skin.svg, Wikimedia Commons"),F("Anatomy The Skin - NCI Visuals Online.jpg","Skin layers with glands and vessels: reference for dermal versus subcutaneous placement.","National Cancer Institute, public domain")],items:[
+ {h:"Layers of the face",figs:[F("Anatomy The Skin - NCI Visuals Online.jpg","Skin layers with glands and vessels: reference for dermal versus subcutaneous placement.","National Cancer Institute, public domain")],items:[
   "Skin, subcutaneous fat (superficial and deep compartments), muscle and SMAS, deep fat and retaining ligaments, then periosteum and bone.",
   "Depth decides the product and the technique: intradermal for skin quality, subcutaneous for contour, deep supraperiosteal bolus for structural support.",
   "Ageing combines bone resorption, deep fat-pad volume loss, ligament laxity, skin thinning and repeated muscle movement. Dynamic lines appear with movement; static lines remain at rest."]},
@@ -16,7 +18,7 @@ var MODULES = [
   "Corrugator supercilii and procerus: glabellar frown lines. Corrugators draw the brows medially and down; procerus draws the medial brow down.",
   "Orbicularis oculi: lateral canthal lines (crow's feet).",
   "Lower face: depressor anguli oris, mentalis and masseter. Masseter and several lower-face uses are outside many products' licensed indications, so they need extra training, informed consent and a documented rationale."]},
- {h:"Blood supply and danger zones",figs:[F("Facial artery.PNG","Superficial dissection of the neck and face showing the external carotid and facial artery.","Gray's Anatomy (1918), public domain"),F("Gray515.png","Blood vessels of the eyelids, front view: supraorbital, nasal and angular arteries, with the facial artery as the angular artery's origin.","Gray's Anatomy (1918), public domain")],items:[
+ {h:"Blood supply and danger zones",figs:[F("Facial artery.PNG","Superficial dissection of the neck and face showing the external carotid and facial artery.","Gray's Anatomy (1918), public domain")],items:[
   "The facial artery arises from the external carotid, crosses the mandible at the anterior border of masseter, runs alongside the nasolabial fold and ends as the angular artery near the nose. The labial arteries branch off near the oral commissure.",
   "The supratrochlear, supraorbital and dorsal nasal arteries come from the ophthalmic (internal carotid) system. They anastomose with the angular artery, which is why filler pushed into them can travel retrograde to the eye.",
   "Highest-risk zones: glabella, nose, nasolabial fold, temple, tear trough and forehead. Lips and nasolabial folds are also a common site of vascular occlusion.",
@@ -79,14 +81,14 @@ var MODULES = [
   "Cross-linked HA (commonly BDDE) is hydrophilic and reversible with hyaluronidase. Most contain lidocaine.",
   "Key rheology: G-prime (firmness and lift), cohesivity (how well the gel holds together), HA concentration and particle or gel size.",
   "General rule: firmer, more cohesive products for deep structural support (chin, jaw, deep cheek); softer products for superficial or mobile areas such as lips."]},
- {h:"Technique principles",figs:[F("Sodium hyaluronate injection.jpg","Hyaluronic acid injection technique in the face.","Dr Charalambos Gouvas, Wikimedia Commons"),F("Gray515.png","Blood vessels of the eyelids, front view: supraorbital, nasal and angular arteries, with the facial artery as the angular artery's origin.","Gray's Anatomy (1918), public domain")],items:[
+ {h:"Technique principles",figs:[],items:[
   "Needle or cannula, always with a clear plan for depth. Use slow, low-pressure injection, small aliquots and constant movement. Never inject against resistance.",
   "Techniques include retrograde linear threading, fanning, serial puncture and deep supraperiosteal bolus.",
   "Stop immediately if the skin blanches or the patient reports severe or disproportionate pain.",
   "Sensible progression for a returning injector: nasolabial folds and marionette lines, cheeks, chin, jawline and lips with supervision. Nose, glabella, temple and tear trough need advanced training."]},
  {h:"Contraindications",items:[
   "Pregnancy and breastfeeding, active infection or inflammation at the site, uncontrolled autoimmune disease, allergy to lidocaine or the product, history of anaphylaxis, bleeding disorders or anticoagulation (relative), previous permanent filler in the area (relative), active cold sore for lips."]},
- {h:"Complications",figs:[F("Hyaluronic Acid - Lip (49416531962).jpg","Histology: hyaluronic acid filler within tissue, from a nodule excised from a lip. Shows why filler can form palpable lumps.","Atlas of Medical Foreign Bodies, via Wikimedia Commons")],items:[
+ {h:"Complications",figs:[],items:[
   "Early: bruising, swelling, redness, tenderness, asymmetry and visible lumps.",
   "Vascular occlusion: the most important emergency (see the complications module). It can cause skin necrosis and blindness.",
   "Late: non-inflammatory nodules (placement or volume), inflammatory nodules and delayed-onset reactions (often after dental work, viral illness or vaccination), infection and biofilm, granuloma, Tyndall effect (blue-grey tint from too-superficial placement), migration.",
@@ -98,7 +100,7 @@ var MODULES = [
  notes:[
  {h:"First, scope",items:[
   "Your course covered skin boosters or peels. Treat the rest of this module as revision and only offer what you were signed off on in practice."]},
- {h:"Skin assessment",figs:[F("Influence of pigmentation on skin cancer risk.png","Fitzpatrick scale: skin types I to VI by burning and tanning behaviour. Use it before every peel, microneedling or energy treatment.","Wikimedia Commons"),F("Skin.svg","Skin in section: epidermis, dermis and subcutis with vessels, nerve endings and glands.","Skin.svg, Wikimedia Commons")],items:[
+ {h:"Skin assessment",figs:[F("Influence of pigmentation on skin cancer risk.png","Fitzpatrick scale: skin types I to VI by burning and tanning behaviour. Use it before every peel, microneedling or energy treatment.","Wikimedia Commons")],items:[
   "Fitzpatrick type I to VI guides risk, especially post-inflammatory hyperpigmentation (PIH) in types IV to VI.",
   "Look for active acne, infection, eczema or dermatitis, recent sun exposure or tan, keloid tendency, isotretinoin use, pregnancy and cold sores."]},
  {h:"Skin boosters",figs:[F("Intradermal injection.jpg","An intradermal injection. Skin boosters are placed at this dermal depth in small aliquots.","Wikimedia Commons, CC BY 4.0"),F("Anatomy The Skin - NCI Visuals Online.jpg","Skin layers with glands and vessels: reference for dermal versus subcutaneous placement.","National Cancer Institute, public domain")],items:[
@@ -121,7 +123,7 @@ var MODULES = [
   "Know your protocol and keep it in the treatment room. Follow the one you were trained on and national guidance such as the ACE group complications guidance.",
   "Have hyaluronidase in date and immediately available (more than one vial), adrenaline 1 mg/mL ampoules, resuscitation and airway equipment appropriate to the setting, and current basic life support training.",
   "Know the nearest emergency eye service and have a named colleague for cover when you are unavailable."]},
- {h:"Recognising vascular occlusion",figs:[F("Gray515.png","Blood vessels of the eyelids, front view: supraorbital, nasal and angular arteries, with the facial artery as the angular artery's origin.","Gray's Anatomy (1918), public domain")],items:[
+ {h:"Recognising vascular occlusion",figs:[],items:[
   "Immediate or early pain disproportionate to the procedure, blanching, livedo or mottled skin, delayed capillary refill, later dusky or violaceous colour, pustules, ulceration and necrosis.",
   "Visual red flags: sudden visual loss or blurring, eye pain, double vision, ophthalmoplegia, headache or any neurological symptom. This is an emergency."]},
  {h:"Managing vascular occlusion",items:[

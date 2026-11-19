@@ -4,16 +4,17 @@ function gbp(n){var neg=n<0;var v=Math.round(Math.abs(n)).toString().replace(/\B
 function pct(a,b){return b?Math.round(a/b*100):0;}
 function bar(p,label){return '<div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+p+'" aria-label="'+esc(label)+'"><span style="width:'+p+'%"></span></div>';}
 function figHtml(f){
+ if(!f.k){if(window.console)console.warn("Figure without key skipped: "+f.f);return "";}
  var n=f.f.replace(/ /g,"_");
  var src=CM+"Special:FilePath/"+encodeURIComponent(n)+"?width=1000";
  var full=CM+"Special:FilePath/"+encodeURIComponent(n);
  var page=CM+"File:"+encodeURIComponent(n);
- return '<figure class="fig"><a class="imgl" href="'+full+'" target="_blank" rel="noopener" aria-label="Open full-size image"><img loading="lazy" src="'+src+'" alt="'+esc(f.c)+'" onerror="this.style.display=\'none\';this.parentNode.insertAdjacentHTML(\'afterend\',\'<p class=&quot;noimg&quot;>This image could not load. Use the source link below.</p>\')"></a><figcaption>'+esc(f.c)+'<br><span>Image: '+esc(f.a)+' · <a href="'+page+'" target="_blank" rel="noopener">Source and licence</a></span></figcaption></figure>';
+ return '<figure class="fig"><a class="imgl" href="'+full+'" target="_blank" rel="noopener" aria-label="Open full-size image"><img loading="lazy" src="'+src+'" alt="'+esc(f.c)+'" onerror="this.style.display=\'none\';this.parentNode.insertAdjacentHTML(\'afterend\',\'<p class=&quot;noimg&quot;>This image could not load. Use the source link below.</p>\')"></a><figcaption>'+esc(f.c)+'<br><strong>Key.</strong> '+esc(f.k)+'<br><span>Image: '+esc(f.a)+' · <a href="'+page+'" target="_blank" rel="noopener">Source and licence</a></span></figcaption></figure>';
 }
 
 /* ---------- state ---------- */
 var KEY="arh_v2";
-var S={mods:{},weeks:{},harley:{},ready:{},cards:{},biz:{},calc:null};
+var S={mods:{},weeks:{},harley:{},ready:{},cards:{},biz:{},calc:null,plan:{},log:[],launch:{},quiz:{},dates:{},ptab:"week"};
 try{var raw=localStorage.getItem(KEY);if(raw){var p0=JSON.parse(raw);for(var k0 in S){if(p0[k0]!==undefined)S[k0]=p0[k0];}}}catch(e){}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
 
@@ -69,7 +70,7 @@ function viewHome(){
  h+='<div class="card dark"><h3>Supervised before solo</h3><p>Independent treatment starts only after documented competency sign-off, never a case count.</p></div>';
  h+='<div class="card dark"><h3>Only treat when reachable</h3><p>Book a patient only if you or a named colleague can be reached for the next two weeks.</p></div></div></section>';
  h+='<section class="stack-s"><div class="sec-head"><div class="eyebrow">Inside the hub</div><h2>Everything in one place</h2></div><div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(190px,1fr))">';
- var tiles=[["#/plan","The plan","Clinical roadmap, eight-week refresher, readiness checklists."],["#/modules","Revision modules","Six illustrated modules with anatomy and technique images."],["#/cards","Flashcards","Cards with spaced repetition by module."],["#/business","Business plan","Hastings market, budget, live financial model, 12-month plan."],["#/progress","Progress","Everything you have ticked off, saved on this device."]];
+ var tiles=[["#/plan","The plan","Clinical roadmap, eight-week refresher, readiness checklists."],["#/modules","Revision modules","Six illustrated modules with anatomy and technique images."],["#/cards","Flashcards","Cards with spaced repetition by module."],["#/practice","Practice","Exam-style questions and clinical scenarios."],["#/planner","Planner","Study week, practice log, launch tasks and countdown."],["#/business","Business plan","Hastings market, budget, live financial model, 12-month plan."],["#/progress","Progress","Everything you have ticked off, saved on this device."]];
  for(var i=0;i<tiles.length;i++)h+='<a class="card mod-card" href="'+tiles[i][0]+'"><h3>'+tiles[i][1]+'</h3><div style="color:var(--muted)">'+tiles[i][2]+'</div></a>';
  h+='</div></section>';
  h+='<p class="disc">This hub is a revision and planning aid, not clinical, legal, financial or regulatory advice. Check doses against product SmPCs, protocols against your Harley materials and national guidance, and rules against current GMC, MHRA, ASA, indemnity and local council requirements.</p></div>';
@@ -225,6 +226,8 @@ function route(){
  else if(v==="cards"){nav="cards";var f=parts[1]?parseInt(parts[1],10):FC.filter;if((!isNaN(f)&&f!==FC.filter)||!FC.order.length){FC.filter=isNaN(f)?0:f;buildOrder();}html=viewCards();}
  else if(v==="business"){nav="business";html=viewBusiness();}
  else if(v==="progress"){nav="progress";html=viewProgress();}
+ else if(v==="practice"){nav="practice";html=viewQuiz();}
+ else if(v==="planner"){nav="planner";html=viewPlanner();}
  else html=viewHome();
  document.getElementById("app").innerHTML=html;
  var links=document.querySelectorAll("nav a");
@@ -250,7 +253,7 @@ document.addEventListener("click",function(e){
  else if(a==="again"||a==="got"){var ix=FC.order[FC.pos];S.cards[ck(ix)]=a==="got"?Math.min(3,box(ix)+1):1;save();FC.pos++;FC.shown=false;rerenderKeep();}
  else if(a==="skip"){FC.pos++;FC.shown=false;rerenderKeep();}
  else if(a==="restart"){buildOrder();rerenderKeep();}
- else if(a==="reset"){if(window.confirm("Reset all saved progress on this device?")){S={mods:{},weeks:{},harley:{},ready:{},cards:{},biz:{},calc:null};CAL={sessions:4,pps:3,spend:210,product:70,room:100,pay:3,fixed:150};save();FC.order=[];rerenderKeep();}}
+ else if(a==="reset"){if(window.confirm("Reset all saved progress on this device?")){S={mods:{},weeks:{},harley:{},ready:{},cards:{},biz:{},calc:null,plan:{},log:[],launch:{},quiz:{},dates:{},ptab:"week"};CAL={sessions:4,pps:3,spend:210,product:70,room:100,pay:3,fixed:150};save();FC.order=[];rerenderKeep();}}
 });
 window.addEventListener("hashchange",route);
-route();
+

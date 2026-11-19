@@ -1,0 +1,17 @@
+.notes h3{font-weight:700;font-size:1.55rem;letter-spacing:.2px}
+.notes ul.fmt{list-style:none;padding:0;margin:14px 0 0}
+.notes ul.fmt li{margin:0;padding:14px 0 14px 18px;border-bottom:1px solid var(--line);border-left:3px solid transparent}
+.notes ul.fmt li:hover{border-left-color:var(--accent,#9A5B6B);background:rgba(154,91,107,.04)}
+.notes ul.fmt li:last-child{border-bottom:0}
+.notes li .pt{display:block;font-weight:700;font-size:1.02rem;color:#2A1C25;margin-bottom:4px;letter-spacing:.1px}
+.notes li .pb{display:block;color:#3A3034;line-height:1.65}
+.notes li .pb b{font-weight:700;color:#2A1C25}
+.notes ul.tick li{padding-left:12px}
+.notes ul.tick label{display:flex;gap:14px;align-items:flex-start;cursor:pointer}
+.notes ul.tick input[type=checkbox]{flex:none;width:22px;height:22px;margin-top:2px;accent-color:#7A3E52;cursor:pointer}
+.notes ul.tick li.done .pt,.notes ul.tick li.done .pb{opacity:.55;text-decoration:line-through}
+.notes .tickbar{display:flex;gap:14px;align-items:center;margin:8px 0 0;font-size:.92rem;color:#6B5A63}
+.notes .tickbar b{color:#7A3E52}
+.notes .tickbar button{background:none;border:1px solid var(--line);border-radius:999px;padding:4px 12px;cursor:pointer;color:#6B5A63;font:inherit}
+.notes .tickbar .bar{flex:1;height:6px;background:#eadfe3;border-radius:6px;overflow:hidden}
+.notes .tickbar .bar i{display:block;height:100%;background:#7A3E52;width:0;transition:width .2s}
